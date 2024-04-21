@@ -34,7 +34,7 @@ public class Blackjack {
         }
 
         public String getImagePath(){
-            return "./cards/" + toString() + ".png";
+            return "./cards/" + this + ".png";
         }
     }
 
@@ -95,7 +95,7 @@ public class Blackjack {
                     System.out.println(dealerSum);
                     System.out.println(playerSum);
 
-                    String message = "";
+                    String message;
                     if (playerSum > 21 || dealerSum > playerSum) {
                         message = "You lost.";
                     } else if (playerSum > dealerSum) {
@@ -117,8 +117,6 @@ public class Blackjack {
     JPanel buttonPanel = new JPanel();
     JButton hitButton = new JButton("MORE!");
     JButton stayButton = new JButton("No more.");
-    JButton newGameButton = new JButton("New Game");
-
 
     Blackjack() {
         startGame();
@@ -137,8 +135,6 @@ public class Blackjack {
         buttonPanel.add(hitButton);
         stayButton.setFocusable(false);
         buttonPanel.add(stayButton);
-        newGameButton.setFocusable(false);
-        buttonPanel.add(newGameButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         hitButton.addActionListener(new ActionListener() {
@@ -177,7 +173,7 @@ public class Blackjack {
         shuffleDeck();
 
 //        dealer, cards and ace count
-        dealerHand = new ArrayList<Card>();
+        dealerHand = new ArrayList<>();
         dealerSum = 0;
         dealerAces = 0;
 
@@ -197,7 +193,7 @@ public class Blackjack {
         System.out.println(dealerAces);
 
 //        player, cards and ace count
-        playerHand = new ArrayList<Card>();
+        playerHand = new ArrayList<>();
         playerSum = 0;
         playerAces = 0;
 
@@ -215,7 +211,7 @@ public class Blackjack {
     }
 
     public void buildDeck() {
-        deck = new ArrayList<Card>();
+        deck = new ArrayList<>();
         String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
         String[] suits = {"C", "D", "H", "S"};
 
