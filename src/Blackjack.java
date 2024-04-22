@@ -33,7 +33,7 @@ public class Blackjack {
             return rank.equals("A");
         }
 
-        public String getImagePath(){
+        public String getImagePath() {
             return "./cards/" + this + ".png";
         }
     }
@@ -78,17 +78,17 @@ public class Blackjack {
                 for (int i = 0; i < dealerHand.size(); i++) {
                     Card card = dealerHand.get(i);
                     Image cardImage = new ImageIcon(Objects.requireNonNull(getClass().getResource(card.getImagePath()))).getImage();
-                    g.drawImage(cardImage, cardWidth + 25 + (cardWidth + 5)*i, 20, cardWidth, cardHeight, null);
+                    g.drawImage(cardImage, cardWidth + 25 + (cardWidth + 5) * i, 20, cardWidth, cardHeight, null);
                 }
-                
+
 //                drawing of the player's hand
                 for (int i = 0; i < playerHand.size(); i++) {
                     Card card = playerHand.get(i);
                     Image cardImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("./cards/" + card.toString() + ".png"))).getImage();
-                    g.drawImage(cardImage, 20 + (cardWidth + 5)*i, 260, cardWidth, cardHeight, null);
+                    g.drawImage(cardImage, 20 + (cardWidth + 5) * i, 260, cardWidth, cardHeight, null);
                 }
 
-                if(!stayButton.isEnabled()) {
+                if (!stayButton.isEnabled()) {
                     dealerSum = reduceDealerAceRank();
                     playerSum = reducePlayerAceRank();
                     System.out.println("Stay:");
@@ -108,6 +108,8 @@ public class Blackjack {
                     g.setColor(Color.white);
                     g.drawString(message, 250, 225);
                 }
+
+                newGameButton.setEnabled(!stayButton.isEnabled());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -117,6 +119,7 @@ public class Blackjack {
     JPanel buttonPanel = new JPanel();
     JButton hitButton = new JButton("MORE!");
     JButton stayButton = new JButton("No more.");
+    JButton newGameButton = new JButton("New Game");
 
     Blackjack() {
         startGame();
@@ -135,13 +138,15 @@ public class Blackjack {
         buttonPanel.add(hitButton);
         stayButton.setFocusable(false);
         buttonPanel.add(stayButton);
+        newGameButton.setFocusable(false);
+        buttonPanel.add(newGameButton);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 
         hitButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Card card = deck.removeLast();
                 playerSum += card.getRank();
-                playerAces += card.isAce()? 1 : 0;
+                playerAces += card.isAce() ? 1 : 0;
                 playerHand.add(card);
                 if (reducePlayerAceRank() > 21) {
                     hitButton.setEnabled(false);
@@ -156,13 +161,21 @@ public class Blackjack {
                 hitButton.setEnabled(false);
                 stayButton.setEnabled(false);
 
-                while (dealerSum < 17){
+                while (dealerSum < 17) {
                     Card card = deck.removeLast();
                     dealerSum += card.getRank();
-                    dealerAces += card.isAce()? 1 : 0;
+                    dealerAces += card.isAce() ? 1 : 0;
                     dealerHand.add(card);
                 }
                 panel.repaint();
+            }
+        });
+
+        newGameButton.addActionListener(new ActionListener() {
+            //            close and open again
+            public void actionPerformed(ActionEvent e) {
+                newGame();
+                SwingUtilities.updateComponentTreeUI(panel);
             }
         });
     }
@@ -237,11 +250,11 @@ public class Blackjack {
             deck.set(j, currentCard);
         }
 
-        System.out.println("\nAfter shuffle:");
+        System.out.println("After shuffle:");
         System.out.println(deck);
     }
 
-    public int reducePlayerAceRank(){
+    public int reducePlayerAceRank() {
         while (playerSum > 21 && playerAces > 0) {
             playerSum -= 10;
             playerAces -= 1;
@@ -249,11 +262,19 @@ public class Blackjack {
         return playerSum;
     }
 
-    public int reduceDealerAceRank(){
+    public int reduceDealerAceRank() {
         while (dealerSum > 21 && dealerAces > 0) {
             dealerSum -= 10;
             dealerAces -= 1;
         }
         return dealerSum;
+    }
+
+    public void newGame() {
+        startGame();
+
+        hitButton.setEnabled(true);
+        stayButton.setEnabled(true);
+        newGameButton.setEnabled(false);
     }
 }
